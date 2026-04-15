@@ -86,7 +86,7 @@ export default function Agendamentos() {
             <thead className="bg-white/5 text-grayText text-xs uppercase">
               <tr>
                 <th className="px-6 py-4">Data/Hora</th>
-                <th className="px-6 py-4">Contato</th>
+                <th className="px-6 py-4">Cliente</th>
                 <th className="px-6 py-4">Profissional</th>
                 <th className="px-6 py-4">Status</th>
               </tr>
@@ -127,13 +127,13 @@ export default function Agendamentos() {
             <h2 className="text-xl font-bold text-white mb-6">Detalhes do Agendamento</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-grayText uppercase mb-1">Contato</p>
+                <p className="text-xs text-grayText uppercase mb-1">Cliente</p>
                 <p className="text-white font-medium">{selected.paciente || selected.lead_name || '-'}</p>
                 <p className="text-sm text-grayText">{selected.telefone || selected.lead_phone || '-'}</p>
               </div>
               <div>
                 <p className="text-xs text-grayText uppercase mb-1">Data e Hora</p>
-                <p className="text-white">{format(new Date(selected.start_time), "dd/MM/yyyy", { locale: ptBR })}</p>
+                <p className="text-white">{format(new Date(selected.start_time), "dd/MM/yyyy HH:mm", { locale: ptBR })}</p>
               </div>
               <div>
                 <p className="text-xs text-grayText uppercase mb-1">Profissional</p>

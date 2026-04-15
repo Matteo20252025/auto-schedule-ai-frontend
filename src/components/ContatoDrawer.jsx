@@ -14,14 +14,24 @@ export const ContatoDrawer = ({ lead, onClose }) => {
   useEffect(() => {
     if (!lead) return;
     setLoading(true);
+
     const fetchChat = async () => {
       const { data } = await supabase
-        .from('chat_messages')
+        .from('n8n_chat_histories')
         .select('*')
-        .eq('lead_id', lead.id)
-        .order('created_at', { ascending: true });
-      setMessages(data || []);
+        .eq('session_id', lead.id)
+        .order('id', { ascending: true });
+
+      const parsed = (data || []).map(row => ({
+        id: row.id,
+        type: row.message?.type,
+        content: typeof row.message?.content === 'string' ? row.message.content : '',
+        created_at: row.created_at,
+      })).filter(m => m.content);
+
+      setMessages(parsed);
     };
+
     const fetchApps = async () => {
       const { data } = await supabase
         .from('view_consultas')
@@ -31,6 +41,7 @@ export const ContatoDrawer = ({ lead, onClose }) => {
       setApps(data || []);
       setLoading(false);
     };
+
     fetchChat();
     fetchApps();
   }, [lead]);
@@ -41,7 +52,7 @@ export const ContatoDrawer = ({ lead, onClose }) => {
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-panel h-screen border-l border-border flex flex-col shadow-2xl">
-        
+
         <div className="p-6 border-b border-border flex justify-between items-center">
           <div>
             <h2 className="text-xl font-bold text-white">{lead.name || 'Sem nome'}</h2>
@@ -84,16 +95,16 @@ export const ContatoDrawer = ({ lead, onClose }) => {
                 <p className="text-grayText text-sm text-center mt-8">Nenhuma mensagem encontrada.</p>
               )}
               {messages.map(m => (
-                <div key={m.id} className={`flex flex-col ${m.sender_type === 'user' ? 'items-start' : 'items-end'}`}>
+                <div key={m.id} className={`flex flex-col ${m.type === 'human' ? 'items-start' : 'items-end'}`}>
                   <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                    m.sender_type === 'user'
+                    m.type === 'human'
                       ? 'bg-[#1e1e1e] text-white rounded-tl-none'
                       : 'bg-gold text-black rounded-tr-none'
                   }`}>
                     {m.content}
                   </div>
                   <span className="text-[10px] text-grayText mt-1">
-                    {format(new Date(m.created_at), "HH:mm", { locale: ptBR })}
+                    {format(new Date(new Date(m.created_at).getTime() - 3 * 60 * 60 * 1000), "HH:mm", { locale: ptBR })}
                   </span>
                 </div>
               ))}

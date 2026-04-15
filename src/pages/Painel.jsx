@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -9,6 +9,23 @@ export default function Painel() {
   const [waitingLeads, setWaitingLeads] = useState([]);
   const [todayAppointments, setTodayAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const prevCountRef = useRef(0);
+
+  const playAlert = () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.3, 0.6].forEach(delay => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.4);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.4);
+    });
+  };
 
   const fetchData = async () => {
     const today = new Date().toISOString().split('T')[0];
@@ -18,12 +35,24 @@ export default function Painel() {
         .gte('start_time', `${today}T00:00:00`)
         .lte('start_time', `${today}T23:59:59`)
     ]);
-    setWaitingLeads(resLeads.data || []);
+
+    const leads = resLeads.data || [];
+
+    if (leads.length > prevCountRef.current) {
+      playAlert();
+    }
+    prevCountRef.current = leads.length;
+
+    setWaitingLeads(leads);
     setTodayAppointments(resApps.data || []);
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAssume = async (id) => {
     await supabase.from('leads').update({ waiting_human: false, ai_status: 'paused' }).eq('id', id);
