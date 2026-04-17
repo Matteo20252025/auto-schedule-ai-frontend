@@ -24,7 +24,7 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
     <aside className="w-[260px] h-screen bg-panel border-r border-border fixed left-0 top-0 flex flex-col">
       <div style={{ height: '185px', overflow: 'hidden' }}>
         <img
-          src="https://i.postimg.cc/X74TBk78/Design-sem-nome-(6).png"
+          src="/LOGO-FOCO-IA-2-0-sem-fundo.png"
           alt="Foco.ia"
           style={{ width: '100%', height: 'auto', marginTop: '-30px' }}
         />
