@@ -3,7 +3,7 @@
 
 Frontend interface for the AutoSchedule AI system — a real-time CRM built to manage WhatsApp conversations, appointments, and client queues for appointment-based businesses.
 
-![Dashboard Preview](focoia_frontend)
+![Dashboard Preview](focoia_frontend.png)
 
 ---
 
