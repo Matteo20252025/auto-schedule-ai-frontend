@@ -46,7 +46,7 @@ Connects directly to the AutoSchedule AI backend:
 ## 🔗 Related
 
 - [AutoSchedule AI Backend](https://github.com/Matteo20252025/auto-schedule-ai) — N8N workflows, WhatsApp agent, and scheduling logic
-- [Full Case Study](docsAutoSchedule_AI_Case_StudyEN.pdf)
+- [Full Case Study](docsAutoSchedule_AI_Case_StudyEN)
 
 ---
 
